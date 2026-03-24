@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JS789 - Demo Color Game</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --card:#111827;
+      --soft:#1f2937;
+      --text:#f8fafc;
+      --muted:#94a3b8;
+      --green:#22c55e;
+      --red:#ef4444;
+      --blue:#3b82f6;
+      --yellow:#f59e0b;
+      --border:rgba(255,255,255,.08);
+      --shadow:0 12px 30px rgba(0,0,0,.25);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,Arial,sans-serif;
+      background:linear-gradient(180deg,#020617,#0f172a 35%,#111827 100%);
+      color:var(--text);
+    }
+    a{color:inherit;text-decoration:none}
+    .container{max-width:1150px;margin:0 auto;padding:24px}
+    .nav{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:16px 0;gap:16px;flex-wrap:wrap
+    }
+    .brand{
+      display:flex;align-items:center;gap:12px;font-weight:800;font-size:24px
+    }
+    .logo{
+      width:42px;height:42px;border-radius:14px;
+      background:linear-gradient(135deg,var(--yellow),#fb7185,#60a5fa);
+      display:grid;place-items:center;color:#111827;font-weight:900
+    }
+    .navlinks{display:flex;gap:12px;flex-wrap:wrap}
+    .pill{
+      padding:10px 14px;border:1px solid var(--border);
+      border-radius:999px;background:rgba(255,255,255,.03)
+    }
+    .hero{
+      display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:center;
+      padding:26px 0 10px
+    }
+    .card{
+      background:rgba(17,24,39,.82);
+      border:1px solid var(--border);
+      box-shadow:var(--shadow);
+      border-radius:var(--radius);
+      backdrop-filter: blur(10px);
+    }
+    .hero-left{padding:34px}
+    h1{
+      font-size:clamp(36px,5vw,60px);line-height:1.02;margin:0 0 16px
+    }
+    .gradient{
+      background:linear-gradient(90deg,#fde68a,#fb7185,#60a5fa);
+      -webkit-background-clip:text;background-clip:text;color:transparent
+    }
+    .sub{font-size:18px;color:var(--muted);line-height:1.6;max-width:700px}
+    .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+    button,.btn{
+      border:none;cursor:pointer;border-radius:14px;
+      padding:13px 18px;font-weight:700;font-size:15px
+    }
+    .btn-primary{background:#fff;color:#111827}
+    .btn-soft{background:rgba(255,255,255,.08);color:#fff;border:1px solid var(--border)}
+    .hero-right{padding:24px}
+    .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    .stat{padding:18px;background:rgba(255,255,255,.04);border-radius:18px;border:1px solid var(--border)}
+    .stat .label{color:var(--muted);font-size:13px}
+    .stat .value{font-size:28px;font-weight:800;margin-top:10px}
+    .notice{
+      margin-top:18px;padding:14px 16px;border-radius:16px;
+      background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);
+      color:#d1fae5;font-size:14px
+    }
+    .grid{
+      display:grid;grid-template-columns:1.1fr .9fr;gap:24px;margin-top:24px
+    }
+    .section{padding:24px}
+    .section h2{margin:0 0 16px;font-size:28px}
+    .muted{color:var(--muted)}
+    .wallet{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px
+    }
+    .mini{
+      background:rgba(255,255,255,.04);border:1px solid var(--border);
+      border-radius:18px;padding:16px
+    }
+    .mini .big{font-size:24px;font-weight:800;margin-top:8px}
+    .colors{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+    .color-btn{
+      padding:18px;border-radius:18px;font-size:17px;font-weight:800;color:#fff
+    }
+    .green{background:linear-gradient(180deg,#22c55e,#15803d)}
+    .red{background:linear-gradient(180deg,#ef4444,#b91c1c)}
+    .blue{background:linear-gradient(180deg,#3b82f6,#1d4ed8)}
+    .bet-controls{display:grid;grid-template-columns:1fr auto;gap:12px;margin-top:12px}
+    input,select{
+      width:100%;padding:14px 16px;border-radius:14px;border:1px solid var(--border);
+      background:#0b1220;color:#fff;font-size:15px
+    }
+    .result{
+      margin-top:18px;padding:16px;border-radius:18px;background:rgba(255,255,255,.04);
+      border:1px solid var(--border);min-height:66px
+    }
+    .round{
+      display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+      margin-top:12px;padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.04)
+    }
+    .leaderboard table{width:100%;border-collapse:collapse}
+    .leaderboard th,.leaderboard td{
+      text-align:left;padding:12px;border-bottom:1px solid rgba(255,255,255,.06)
+    }
+    .tag{
+      display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700
+    }
+    .gold{background:rgba(245,158,11,.18);color:#fde68a}
+    .silver{background:rgba(148,163,184,.18);color:#e2e8f0}
+    .bronze{background:rgba(251,146,60,.18);color:#fdba74}
+    .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
+    .plan{padding:22px}
+    .price{font-size:34px;font-weight:800;margin:8px 0}
+    ul{padding-left:20px;color:var(--muted)}
+    li{margin:8px 0}
+    .adbox,.affiliate{
+      margin-top:18px;padding:18px;border-radius:18px;background:rgba(255,255,255,.04);
+      border:1px dashed rgba(255,255,255,.18)
+    }
+    footer{padding:30px 0 60px;color:var(--muted);text-align:center}
+    .small{font-size:13px}
+    @media (max-width: 900px){
+      .hero,.grid,.plans{grid-template-columns:1fr}
+      .wallet,.colors{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav class="nav">
+      <div class="brand">
+        <div class="logo">J</div>
+        <span>JS789</span>
+      </div>
+      <div class="navlinks">
+        <a class="pill" href="#play">Play Demo</a>
+        <a class="pill" href="#leaderboard">Leaderboard</a>
+        <a class="pill" href="#earn">Earn Model</a>
+        <a class="pill" href="#vip">VIP</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div class="card hero-left">
+        <h1>Build <span class="gradient">JS789</span> as a legal demo game brand</h1>
+        <p class="sub">
+          No deposit. No withdrawal. No real money. This starter website is made for demo gameplay,
+          virtual coins, ad placement, VIP plans, and affiliate promotion so you can grow traffic safely.
+        </p>
+        <div class="cta">
+          <a href="#play" class="btn btn-primary">Start Demo</a>
+          <a href="#earn" class="btn btn-soft">See Earning Model</a>
+        </div>
+      </div>
+      <div class="card hero-right">
+        <div class="stats">
+          <div class="stat">
+            <div class="label">Daily Free Coins</div>
+            <div class="value" id="dailyCoins">500</div>
+          </div>
+          <div class="stat">
+            <div class="label">Virtual Wallet</div>
+            <div class="value" id="heroWallet">1000</div>
+          </div>
+          <div class="stat">
+            <div class="label">Current Round</div>
+            <div class="value" id="heroRound">1</div>
+          </div>
+          <div class="stat">
+            <div class="label">VIP Price</div>
+            <div class="value">₹99</div>
+          </div>
+        </div>
+        <div class="notice">
+          This is a safe demo template. Monetization sections are for ads, memberships, and affiliate links — not betting.
+        </div>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="card section" id="play">
+        <h2>JS789 Demo Color Game</h2>
+        <p class="muted">Choose a color, place a virtual coin amount, and play a practice round.</p>
+
+        <div class="wallet">
+          <div class="mini">
+            <div class="muted">Wallet</div>
+            <div class="big" id="wallet">1000</div>
+          </div>
+          <div class="mini">
+            <div class="muted">Wins</div>
+            <div class="big" id="wins">0</div>
+          </div>
+          <div class="mini">
+            <div class="muted">Losses</div>
+            <div class="big" id="losses">0</div>
+          </div>
+        </div>
+
+        <label class="muted">Choose color</label>
+        <div class="colors">
+          <button class="color-btn green" onclick="setColor('Green')">Green</button>
+          <button class="color-btn red" onclick="setColor('Red')">Red</button>
+          <button class="color-btn blue" onclick="setColor('Blue')">Blue</button>
+        </div>
+
+        <div class="bet-controls">
+          <input id="betAmount" type="number" min="10" step="10" value="50" placeholder="Enter virtual coins" />
+          <button class="btn btn-primary" onclick="playRound()">Play Round</button>
+        </div>
+
+        <div class="round">
+          <div><strong>Selected:</strong> <span id="selectedColor">None</span></div>
+          <div><strong>Round:</strong> <span id="roundNumber">1</span></div>
+        </div>
+
+        <div class="result" id="resultBox">
+          Pick a color and start the demo game.
+        </div>
+
+        <div class="adbox">
+          <strong>AdSense Placeholder</strong>
+          <p class="small muted">Later you can place banner ads here after approval.</p>
+        </div>
+      </div>
+
+      <div class="card section leaderboard" id="leaderboard">
+        <h2>Leaderboard</h2>
+        <p class="muted">Sample player ranking using virtual score.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Player</th>
+              <th>Score</th>
+              <th>Badge</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardBody">
+            <tr><td>#1</td><td>Aryan</td><td>4800</td><td><span class="tag gold">Gold</span></td></tr>
+            <tr><td>#2</td><td>Sana</td><td>4200</td><td><span class="tag silver">Silver</span></td></tr>
+            <tr><td>#3</td><td>Rohit</td><td>3900</td><td><span class="tag bronze">Bronze</span></td></tr>
+            <tr><td>#4</td><td>You</td><td id="youScore">1000</td><td><span class="tag silver">New</span></td></tr>
+          </tbody>
+        </table>
+
+        <div class="affiliate">
+          <strong>Affiliate Placeholder</strong>
+          <p class="small muted">
+            Add product or tool referral links here later. Example: gaming accessories, hosting tools, or creator resources.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card section" id="earn" style="margin-top:24px">
+      <h2>How JS789 can earn money legally</h2>
+      <div class="plans">
+        <div class="card plan">
+          <div class="muted">Model 1</div>
+          <h3>Ads</h3>
+          <div class="price">Traffic</div>
+          <ul>
+            <li>Blog posts + game pages</li>
+            <li>AdSense or direct banner ads</li>
+            <li>Best when traffic grows from reels and YouTube shorts</li>
+          </ul>
+        </div>
+        <div class="card plan">
+          <div class="muted">Model 2</div>
+          <h3>VIP</h3>
+          <div class="price">₹99</div>
+          <ul>
+            <li>No ads for VIP users</li>
+            <li>Extra daily virtual coins</li>
+            <li>Special themes and leaderboard frame</li>
+          </ul>
+        </div>
+        <div class="card plan">
+          <div class="muted">Model 3</div>
+          <h3>Affiliate</h3>
+          <div class="price">Commission</div>
+          <ul>
+            <li>Creator tools or hosting referrals</li>
+            <li>Gaming items or digital products</li>
+            <li>Promote only trusted offers</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="card section" id="vip" style="margin-top:24px">
+      <h2>VIP Plans</h2>
+      <p class="muted">Sample pricing cards for your future premium section.</p>
+      <div class="plans">
+        <div class="card plan">
+          <div class="muted">Starter</div>
+          <h3>Free</h3>
+          <div class="price">₹0</div>
+          <ul>
+            <li>500 daily coins</li>
+            <li>Basic leaderboard</li>
+            <li>Ads enabled</li>
+          </ul>
+          <button class="btn btn-soft">Current Plan</button>
+        </div>
+        <div class="card plan">
+          <div class="muted">Popular</div>
+          <h3>VIP Silver</h3>
+          <div class="price">₹99</div>
+          <ul>
+            <li>2000 bonus coins</li>
+            <li>No ads</li>
+            <li>VIP badge</li>
+          </ul>
+          <button class="btn btn-primary">Upgrade</button>
+        </div>
+        <div class="card plan">
+          <div class="muted">Premium</div>
+          <h3>VIP Gold</h3>
+          <div class="price">₹199</div>
+          <ul>
+            <li>5000 bonus coins</li>
+            <li>Custom profile frame</li>
+            <li>Priority support</li>
+          </ul>
+          <button class="btn btn-primary">Upgrade</button>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p>© 2026 JS789 Demo. Built for demo gameplay, ads, VIP and affiliate ideas.</p>
+      <p class="small">No real-money gaming, no deposits, no withdrawals.</p>
+    </footer>
+  </div>
+
+  <script>
+    let selectedColor = null;
+    let wallet = 1000;
+    let wins = 0;
+    let losses = 0;
+    let round = 1;
+
+    function saveState(){
+      const state = {selectedColor, wallet, wins, losses, round};
+      localStorage.setItem("js789_demo_state", JSON.stringify(state));
+    }
+
+    function loadState(){
+      const raw = localStorage.getItem("js789_demo_state");
+      if(!raw) return;
+      try{
+        const state = JSON.parse(raw);
+        selectedColor = state.selectedColor ?? null;
+        wallet = state.wallet ?? 1000;
+        wins = state.wins ?? 0;
+        losses = state.losses ?? 0;
+        round = state.round ?? 1;
+      }catch(e){}
+    }
+
+    function render(){
+      document.getElementById("selectedColor").textContent = selectedColor || "None";
+      document.getElementById("wallet").textContent = wallet;
+      document.getElementById("heroWallet").textContent = wallet;
+      document.getElementById("wins").textContent = wins;
+      document.getElementById("losses").textContent = losses;
+      document.getElementById("roundNumber").textContent = round;
+      document.getElementById("heroRound").textContent = round;
+      document.getElementById("youScore").textContent = wallet + wins * 150;
+    }
+
+    function setColor(color){
+      selectedColor = color;
+      document.getElementById("resultBox").innerHTML = "Selected <strong>" + color + "</strong>. Enter virtual coins and press Play Round.";
+      saveState();
+      render();
+    }
+
+    function playRound(){
+      const bet = Number(document.getElementById("betAmount").value);
+      if(!selectedColor){
+        document.getElementById("resultBox").innerHTML = "Please choose a color first.";
+        return;
+      }
+      if(!bet || bet < 10){
+        document.getElementById("resultBox").innerHTML = "Minimum virtual bet is 10 coins.";
+        return;
+      }
+      if(bet > wallet){
+        document.getElementById("resultBox").innerHTML = "Not enough virtual coins in your wallet.";
+        return;
+      }
+
+      const colors = ["Green","Red","Blue"];
+      const result = colors[Math.floor(Math.random() * colors.length)];
+
+      if(result === selectedColor){
+        wallet += bet;
+        wins++;
+        document.getElementById("resultBox").innerHTML =
+          "Result color: <strong>" + result + "</strong><br>🎉 You won <strong>" + bet + "</strong> virtual coins.";
+      } else {
+        wallet -= bet;
+        losses++;
+        document.getElementById("resultBox").innerHTML =
+          "Result color: <strong>" + result + "</strong><br>😔 You lost <strong>" + bet + "</strong> virtual coins.";
+      }
+
+      round++;
+      saveState();
+      render();
+    }
+
+    loadState();
+    render();
+  </script>
+</body>
+</html>
